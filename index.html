@@ -7,8 +7,9 @@
     <title>Gourmet Menu | Digital Sales Demo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍽️</text></svg>">
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Outfit:wght@300;400;600;700;900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Outfit:wght@300;400;600;700;900&family=Space+Mono:wght@400;700&display=swap"
         rel="stylesheet">
 
     <style>
@@ -76,11 +77,25 @@
             z-index: 101;
             transition: var(--transition);
             height: 60px;
-            border-bottom: 1px solid var(--accent-gray);
         }
 
         header.scrolled {
             height: 50px;
+        }
+
+        .header-tools {
+            background: var(--bg-light);
+            padding: 0 1.5rem 1.2rem 1.5rem;
+            position: sticky;
+            top: 60px;
+            z-index: 99;
+            transition: all 0.3s ease;
+            border-bottom: 4px solid var(--accent-black);
+            margin-top: -1px; /* Fuse with header */
+        }
+
+        header.scrolled+.header-tools {
+            top: 50px;
         }
 
         .header-left,
@@ -113,8 +128,7 @@
             position: sticky;
             top: 60px;
             z-index: 99;
-            border-bottom: 1px solid var(--accent-gray);
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
         }
 
         header.scrolled+.header-tools {
@@ -743,12 +757,165 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             flex-shrink: 0;
         }
+
+        /* --- Order Slip UI --- */
+        .order-bar {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(150%);
+            width: 90%;
+            max-width: 400px;
+            background: var(--accent-black);
+            color: white;
+            padding: 1.25rem 2rem;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+        }
+
+        .order-bar.active {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .order-count {
+            background: white;
+            color: black;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 0.8rem;
+        }
+
+        .order-label {
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        /* --- Receipt Aesthetic --- */
+        .receipt-container {
+            font-family: 'Space Mono', monospace;
+            background: white;
+            padding: 2.5rem 1.5rem;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.05);
+            border: 1px solid #ddd;
+        }
+
+        .receipt-container::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 0;
+            right: 0;
+            height: 15px;
+            background-image: linear-gradient(135deg, white 25%, transparent 25%), linear-gradient(225deg, white 25%, transparent 25%);
+            background-size: 10px 30px;
+            background-position: left bottom;
+            z-index: 10;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px dashed #000;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .receipt-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            background: white;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            position: relative;
+            touch-action: pan-y;
+        }
+
+        .summary-item.swiping {
+            transition: none;
+        }
+
+        .summary-item.removed {
+            transform: translateX(100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .swipe-hint {
+            text-align: center;
+            font-size: 0.6rem;
+            color: #999;
+            margin-top: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .summary-details h4 {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+        }
+
+        .total-section {
+            border-top: 2px dashed #000;
+            padding-top: 1.5rem;
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .total-label {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .total-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        /* Pop Animation */
+        @keyframes pop {
+            0% { transform: scale(1) translateX(-50%); }
+            50% { transform: scale(1.1) translateX(-45%); }
+            100% { transform: scale(1) translateX(-50%); }
+        }
+        .pop-anim {
+            animation: pop 0.3s ease;
+        }
+
     </style>
 </head>
 
 <body>
 
     <div class="viewport-shadow" id="scrollIndicator"></div>
+
+    <div class="order-bar" id="orderBar" onclick="openOrderSummary()">
+        <div class="order-count" id="orderCount">0</div>
+        <div class="order-label">Your Order Slip</div>
+        <div class="order-price" id="orderTotalPrice">0</div>
+    </div>
 
     <header id="mainHeader">
         <div class="header-left" onclick="toggleMenu(true)">
@@ -769,7 +936,7 @@
         </div>
     </header>
 
-    <div class="header-tools">
+    <div class="header-tools" id="headerTools">
         <div class="search-container" id="searchContainer">
             <input type="text" id="menuSearch" class="search-input" placeholder="Search for your favorites..."
                 oninput="handleSearch()">
@@ -793,7 +960,8 @@
                 <div class="overlay-cat-text">Burgers</div>
             </div>
             <div class="overlay-cat-card" onclick="scrollToSection('wings'); toggleMenu(false);">
-                <img src="https://images.unsplash.com/photo-1527477396000-dcad6c3f0672?w=400" alt="Wings">
+                <img src="https://easychickenrecipes.com/wp-content/uploads/2023/08/featured-buffalo-wings-recipe.jpg?w=400"
+                    alt="Wings">
                 <div class="overlay-cat-text">Wings</div>
             </div>
             <div class="overlay-cat-card" onclick="scrollToSection('sides'); toggleMenu(false);">
@@ -846,15 +1014,54 @@
                 </div>
             </div>
 
-            <button class="action-button" onclick="closeModal()">Add to Order</button>
+            <button class="action-button" onclick="addItemToOrder()">Add to Order</button>
+        </div>
+    </div>
+
+    <!-- Order Summary Modal (Receipt Style) -->
+    <div class="modal-overlay" id="orderSummaryModal">
+        <div class="modal-sheet" style="background: #eee; padding: 2rem 1.5rem;">
+            <div class="modal-close-btn" onclick="closeOrderSummary()" style="top: 1rem; right: 1rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </div>
+            
+            <div class="receipt-container">
+                <div class="receipt-header">
+                    <div class="receipt-title">Order Slip</div>
+                    <div style="font-size: 0.7rem; margin-top: 0.5rem;">TABLE: DEMO | SERVER: AI</div>
+                    <div style="font-size: 0.7rem; margin-top: 0.2rem;">${new Date().toLocaleTimeString()}</div>
+                </div>
+
+                <div id="summaryContent" style="overflow-x: hidden;">
+                    <!-- Dynamic Items -->
+                </div>
+                
+                <div class="swipe-hint">Swipe item to remove from slip</div>
+
+                <div class="total-section">
+                    <div class="total-label">TOTAL</div>
+                    <div id="summaryTotal" class="total-amount">0</div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 2rem; font-size: 0.7rem; color: #555;">
+                    ****************************<br>
+                    PLEASE SHOW THIS TO YOUR SERVER<br>
+                    THANK YOU FOR DINING
+                </div>
+            </div>
+
+            <button class="action-button" onclick="closeOrderSummary()" style="background: #333; margin-top: 3rem;">Close Slip</button>
         </div>
     </div>
 
     <script>
-        // Native Scroll Logic (No dependencies)
+        // Native State
+        let currentItem = null;
+        let order = [];
         window.addEventListener('scroll', () => {
+            const currentScroll = window.scrollY;
             const header = document.getElementById('mainHeader');
-            header.classList.toggle('scrolled', window.scrollY > 30);
+            header.classList.toggle('scrolled', currentScroll > 30);
         });
 
         const menuData = {
@@ -871,7 +1078,7 @@
                         { name: "Grand Grill Signature", price: "165", sub: "Triple-stacked prime beef, triple melted aged cheddar, secret house glaze", img: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&h=450&fit=crop", badge: "Premium" },
                         { name: "Velvety Mushroom Swiss", price: "135", sub: "Gourmet grilled patty, sautéed forest mushrooms, melted swiss cream", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=450&fit=crop", badge: "Popular" },
                         { name: "Smokey Double Melt", price: "125", sub: "Two layers of melted sharp cheddar, hickory-smoked reserve sauce", img: "https://images.unsplash.com/photo-1551782450-17144efb9c50?w=600&h=450&fit=crop" },
-                        { name: "Crunchy Zesty Fillet", price: "99", sub: "Premium spice-glazed fillet with cooling house ranch drizzle", img: "https://images.unsplash.com/photo-1600891964599-f61ba0e62592?w=600&h=450&fit=crop", badge: "Spicy" },
+                        { name: "Crunchy Zesty Fillet", price: "99", sub: "Premium spice-glazed fillet with cooling house ranch drizzle", img: "https://www.vinhhoan.com/wp-content/uploads/2021/09/Crunchy-Breaded-Fillet-scaled.jpg", badge: "Spicy" },
                         { name: "Crispy Gold Original", price: "99", sub: "The original 11-spice hand-breaded golden signature fillet", img: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=600&h=450&fit=crop" }
                     ]
                 },
@@ -881,27 +1088,27 @@
                     items: [
                         { name: "The Platter (12 Pcs)", price: "199", sub: "Perfect for sharing. Choice of 2 artisanal house sauces", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&h=450&fit=crop", badge: "Chef's Choice" },
                         { name: "Half Platter (6 Pcs)", price: "109", sub: "Juicy flame-grilled selections with our signature house spice", img: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=600&h=450&fit=crop" },
-                        { name: "Honey Garlic Tenders", price: "129", sub: "4 hand-breaded cuts tossed in locally sourced garlic nectar", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=450&fit=crop" },
+                        { name: "Honey Garlic Tenders", price: "129", sub: "4 hand-breaded cuts tossed in locally sourced garlic nectar", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGRuuuVNkArH3S8wdh3qGuKuYzk2R4d6LOrg&s" },
                         { name: "Zesty BBQ Wings", price: "119", sub: "Smokey, charred, and tossed in our world-famous glaze", img: "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600&h=450&fit=crop", badge: "Popular" },
-                        { name: "Peri-Peri Skewers", price: "145", sub: "Three prime cuts grilled over open flame with citrus spice", img: "https://images.unsplash.com/photo-1598971639058-fab3c3109a00?w=600&h=450&fit=crop" }
+                        { name: "Peri-Peri Skewers", price: "145", sub: "Three prime cuts grilled over open flame with citrus spice", img: "https://assets.sainsburys-groceries.co.uk/gol/chicken-piri-piri-skewers/original.jpg" }
                     ]
                 },
                 {
                     id: "sides",
                     name: "Artisanal Sides",
                     items: [
-                        { name: "Hand-Cut Loaded Fries (L)", price: "99", sub: "Cheddar melt, house fire sauce, and crispy chicken bits", img: "https://images.unsplash.com/photo-1626700054175-7bee2f3e88e4?w=600&h=450&fit=crop", badge: "Value" },
-                        { name: "Hand-Cut Fries (M)", price: "79", sub: "The perfect decoy for the large", img: "https://images.unsplash.com/photo-1630384060421-cf20faa8b52b?w=600&h=450&fit=crop" },
+                        { name: "Hand-Cut Loaded Fries (L)", price: "99", sub: "Cheddar melt, house fire sauce, and crispy chicken bits", img: "https://www.queensleeappetit.com/wp-content/uploads/2018/01/Loaded-Cheese-Fries-2-480x480.jpg", badge: "Value" },
+                        { name: "Hand-Cut Fries (M)", price: "79", sub: "The perfect decoy for the large", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSBt5RdbNGN2PopQ1ox14cVQI7tiXglqrAIA&s" },
                         { name: "Mozzarella Melt Sticks", price: "79", sub: "6pcs stringy mozzarella with house marinara dip", img: "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=600&h=450&fit=crop" },
                         { name: "Onion Ring Stack", price: "69", sub: "Thick cut, beer-battered, and golden-crisped", img: "https://images.unsplash.com/photo-1615937657715-bc7b4b7962c1?w=600&h=450&fit=crop" },
-                        { name: "Golden Jasmine Rice", price: "54", sub: "Fragrant fried rice infused with signature spices", img: "https://images.unsplash.com/photo-1651232456733-2d9dbbd1dac1?w=600&h=450&fit=crop" }
+                        { name: "Golden Jasmine Rice", price: "54", sub: "Fragrant fried rice infused with signature spices", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS12J5nnrSe2ACAtBR_zNNNEU853DrzmhM-tA&s" }
                     ]
                 },
                 {
                     id: "desserts",
                     name: "Sweet Endings",
                     items: [
-                        { name: "Double Choc Brownie", price: "89", sub: "Warm fudge brownie topped with sea salt flakes", img: "https://images.unsplash.com/photo-1606755962773-d3247e8b3db9?w=600&h=450&fit=crop", badge: "Popular" },
+                        { name: "Double Choc Brownie", price: "89", sub: "Warm fudge brownie topped with sea salt flakes", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIzmbySkOEQSrSvM9BKtzXFoMwyUtxoDA0tg&s", badge: "Popular" },
                         { name: "Gourmet Vanilla Shake", price: "74", sub: "Made with 100% real dairy vanilla bean custard", img: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=600&h=450&fit=crop" }
                     ]
                 },
@@ -911,7 +1118,7 @@
                     items: [
                         { name: "Artisanal Iced Tea", price: "34", sub: "Select premium house-brewed flavors", img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&h=450&fit=crop" },
                         { name: "Premium Craft Lager", price: "29", sub: "500ml Chilled locally-sourced brew", img: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=600&h=450&fit=crop" },
-                        { name: "Sparkling Soda Can", price: "14", sub: "Refreshing 330ml Chilled Selection", img: "https://images.unsplash.com/photo-1505252585461-04db1eb84625?w=600&h=450&fit=crop" }
+                        { name: "Sparkling Soda Can", price: "14", sub: "Refreshing 330ml Chilled Selection", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFJO4rbtY_dPjHbUVejF3NLBdpMYNOhhnd0Q&s" }
                     ]
                 }
             ]
@@ -1166,6 +1373,7 @@
         }
 
         function openItem(item, categories) {
+            currentItem = item;
             if (!Array.isArray(categories)) categories = [categories];
 
             const modal = document.getElementById('modalOverlay');
@@ -1209,6 +1417,120 @@
 
         function toggleOption(el) {
             el.classList.toggle('selected');
+        }
+
+        function addItemToOrder() {
+            const selectedOptions = Array.from(document.querySelectorAll('.custom-option.selected'))
+                .map(el => el.innerText.split('\n')[0].trim());
+            
+            order.push({
+                ...currentItem,
+                customizations: selectedOptions
+            });
+
+            updateOrderUI();
+            
+            // Pop effect
+            const bar = document.getElementById('orderBar');
+            bar.classList.add('pop-anim');
+            setTimeout(() => bar.classList.remove('pop-anim'), 300);
+
+            closeModal();
+        }
+
+        function updateOrderUI() {
+            const bar = document.getElementById('orderBar');
+            const count = document.getElementById('orderCount');
+            const price = document.getElementById('orderTotalPrice');
+
+            if (order.length > 0) {
+                bar.classList.add('active');
+                count.innerText = order.length;
+                const total = order.reduce((sum, item) => sum + parseFloat(item.price), 0);
+                price.innerText = total;
+            } else {
+                bar.classList.remove('active');
+            }
+        }
+
+        function openOrderSummary() {
+            const modal = document.getElementById('orderSummaryModal');
+            const content = document.getElementById('summaryContent');
+            const totalDisplay = document.getElementById('summaryTotal');
+
+            content.innerHTML = order.map((item, idx) => `
+                <div class="summary-item" data-index="${idx}" 
+                     ontouchstart="handleTouchStart(event)" 
+                     ontouchmove="handleTouchMove(event)" 
+                     ontouchend="handleTouchEnd(event)">
+                    <div class="summary-details">
+                        <h4>${item.name}</h4>
+                        <p style="font-size: 0.7rem; color: #777;">${item.customizations.length > 0 ? item.customizations.join(', ') : 'Standard'}</p>
+                    </div>
+                    <div class="summary-price">${item.price}</div>
+                </div>
+            `).join('');
+
+            const total = order.reduce((sum, item) => sum + parseFloat(item.price), 0);
+            totalDisplay.innerText = total;
+
+            modal.style.display = 'flex';
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    modal.classList.add('active');
+                });
+            });
+            document.body.style.overflow = 'hidden';
+        }
+
+        let touchStartX = 0;
+        let touchCurrentX = 0;
+
+        function handleTouchStart(e) {
+            touchStartX = e.touches[0].clientX;
+            e.currentTarget.classList.add('swiping');
+        }
+
+        function handleTouchMove(e) {
+            touchCurrentX = e.touches[0].clientX;
+            const diff = touchCurrentX - touchStartX;
+            // Only allow right swipe for removal logic, or left if preferred
+            if (Math.abs(diff) > 10) {
+                e.currentTarget.style.transform = `translateX(${diff}px)`;
+            }
+        }
+
+        function handleTouchEnd(e) {
+            const el = e.currentTarget;
+            el.classList.remove('swiping');
+            const diff = touchCurrentX - touchStartX;
+            const index = parseInt(el.getAttribute('data-index'));
+
+            if (Math.abs(diff) > 120) {
+                // Remove item
+                el.classList.add('removed');
+                setTimeout(() => {
+                    order.splice(index, 1);
+                    updateOrderUI();
+                    openOrderSummary(); // Refresh list
+                }, 300);
+            } else {
+                // Snap back
+                el.style.transform = 'translateX(0)';
+            }
+            touchStartX = 0;
+            touchCurrentX = 0;
+        }
+
+        function closeOrderSummary() {
+            const modal = document.getElementById('orderSummaryModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            setTimeout(() => {
+                if (!modal.classList.contains('active')) {
+                    modal.style.display = 'none';
+                }
+            }, 500);
         }
 
         function closeModal() {

@@ -1368,27 +1368,49 @@
             handleSearch() {
                 clearTimeout(this.searchTimeout);
                 this.searchTimeout = setTimeout(() => {
-                    const query = document.getElementById('menuSearch').value.toLowerCase();
+                    const query = document.getElementById('menuSearch').value.toLowerCase().trim();
+                    const isSearchEmpty = query === "";
+
+                    // Individual Cards
                     document.querySelectorAll('.menu-card').forEach(card => {
                         const name = card.querySelector('.card-name').innerText.toLowerCase();
                         const wrap = card.closest('.reveal-card');
-                        wrap.style.display = name.includes(query) ? 'block' : 'none';
+                        wrap.style.display = (isSearchEmpty || name.includes(query)) ? 'block' : 'none';
                     });
 
+                    // Menu Category Sections
                     document.querySelectorAll('.menu-group').forEach(section => {
-                        const visibleWraps = Array.from(section.querySelectorAll('.reveal-card'))
-                            .filter(wrap => wrap.style.display !== 'none');
-                        section.style.display = (visibleWraps.length > 0 || query === "") ? 'block' : 'none';
+                        const visibleInGroup = Array.from(section.querySelectorAll('.reveal-card'))
+                            .some(wrap => wrap.style.display !== 'none');
+                        section.style.display = (isSearchEmpty || visibleInGroup) ? 'block' : 'none';
                     });
 
-                    document.getElementById('combos').style.display = query === "" ? 'block' : 'none';
-                }, 300);
+                    // Combos Section
+                    const combosSection = document.getElementById('combos');
+                    if (combosSection) {
+                        combosSection.style.display = isSearchEmpty ? 'block' : 'none';
+                    }
+
+                    // Reset reveal animations for items that were hidden
+                    if (isSearchEmpty) {
+                        this.setupRevealObserver();
+                    }
+                }, 200);
             }
 
             toggleSearch() {
                 const container = document.getElementById('searchContainer');
+                const menuSearch = document.getElementById('menuSearch');
+                const isOpening = !container.classList.contains('active');
+                
                 container.classList.toggle('active');
-                if (container.classList.contains('active')) document.getElementById('menuSearch').focus();
+                
+                if (isOpening) {
+                    menuSearch.focus();
+                } else {
+                    menuSearch.value = "";
+                    this.handleSearch(); // Restore all items
+                }
             }
 
             toggleMenu(show) {

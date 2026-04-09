@@ -7,7 +7,8 @@
     <title>Gourmet Menu | Digital Sales Demo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍽️</text></svg>">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍽️</text></svg>">
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Outfit:wght@300;400;600;700;900&family=Space+Mono:wght@400;700&display=swap"
         rel="stylesheet">
@@ -91,7 +92,8 @@
             z-index: 99;
             transition: all 0.3s ease;
             border-bottom: 4px solid var(--accent-black);
-            margin-top: -1px; /* Fuse with header */
+            margin-top: -1px;
+            /* Fuse with header */
         }
 
         header.scrolled+.header-tools {
@@ -774,7 +776,7 @@
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             cursor: pointer;
         }
@@ -809,7 +811,7 @@
             background: white;
             padding: 2.5rem 1.5rem;
             position: relative;
-            box-shadow: 0 0 50px rgba(0,0,0,0.05);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.05);
             border: 1px solid #ddd;
         }
 
@@ -894,16 +896,37 @@
             font-weight: 700;
         }
 
+        /* Reveal Animations */
+        .reveal-card {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-card.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* Pop Animation */
         @keyframes pop {
-            0% { transform: scale(1) translateX(-50%); }
-            50% { transform: scale(1.1) translateX(-45%); }
-            100% { transform: scale(1) translateX(-50%); }
+            0% {
+                transform: scale(1) translateX(-50%);
+            }
+
+            50% {
+                transform: scale(1.1) translateX(-45%);
+            }
+
+            100% {
+                transform: scale(1) translateX(-50%);
+            }
         }
+
         .pop-anim {
             animation: pop 0.3s ease;
         }
-
     </style>
 </head>
 
@@ -911,14 +934,14 @@
 
     <div class="viewport-shadow" id="scrollIndicator"></div>
 
-    <div class="order-bar" id="orderBar" onclick="openOrderSummary()">
+    <div class="order-bar" id="orderBar">
         <div class="order-count" id="orderCount">0</div>
         <div class="order-label">Your Order Slip</div>
         <div class="order-price" id="orderTotalPrice">0</div>
     </div>
 
     <header id="mainHeader">
-        <div class="header-left" onclick="toggleMenu(true)">
+        <div class="header-left">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5"
                 stroke-linecap="round">
                 <line x1="3" y1="12" x2="21" y2="12" />
@@ -927,7 +950,7 @@
             </svg>
         </div>
         <div class="brand-name">DINING DEMO</div>
-        <div class="header-right" onclick="toggleSearch()">
+        <div class="header-right">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5"
                 stroke-linecap="round">
                 <circle cx="11" cy="11" r="8" />
@@ -938,39 +961,36 @@
 
     <div class="header-tools" id="headerTools">
         <div class="search-container" id="searchContainer">
-            <input type="text" id="menuSearch" class="search-input" placeholder="Search for your favorites..."
-                oninput="handleSearch()">
+            <input type="text" id="menuSearch" class="search-input" placeholder="Search for your favorites...">
         </div>
         <nav class="category-nav" id="categoryNav">
-            <div class="nav-pill active" onclick="scrollToSection('combos')">COMBOS</div>
-            <div class="nav-pill" onclick="scrollToSection('burgers')">MAINS</div>
-            <div class="nav-pill" onclick="scrollToSection('wings')">PLATES</div>
-            <div class="nav-pill" onclick="scrollToSection('sides')">SIDES</div>
-            <div class="nav-pill" onclick="scrollToSection('desserts')">SWEETS</div>
-            <div class="nav-pill" onclick="scrollToSection('beverages')">DRINKS</div>
+            <div class="nav-pill active" data-section="combos">COMBOS</div>
+            <div class="nav-pill" data-section="burgers">MAINS</div>
+            <div class="nav-pill" data-section="wings">PLATES</div>
+            <div class="nav-pill" data-section="sides">SIDES</div>
+            <div class="nav-pill" data-section="desserts">SWEETS</div>
+            <div class="nav-pill" data-section="beverages">DRINKS</div>
         </nav>
     </div>
 
     <!-- Burger Menu Overlay -->
     <div id="menuOverlay" class="menu-overlay">
-        <div class="overlay-close" onclick="toggleMenu(false)">&times;</div>
+        <div class="overlay-close" id="overlayClose">&times;</div>
         <div class="category-grid-full">
-            <div class="overlay-cat-card" onclick="scrollToSection('burgers'); toggleMenu(false);">
-                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" alt="Burgers">
+            <div class="overlay-cat-card" data-section="burgers">
+                <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=400" alt="Burgers">
                 <div class="overlay-cat-text">Burgers</div>
             </div>
-            <div class="overlay-cat-card" onclick="scrollToSection('wings'); toggleMenu(false);">
-                <img src="https://easychickenrecipes.com/wp-content/uploads/2023/08/featured-buffalo-wings-recipe.jpg?w=400"
-                    alt="Wings">
+            <div class="overlay-cat-card" data-section="wings">
+                <img src="https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400" alt="Wings">
                 <div class="overlay-cat-text">Wings</div>
             </div>
-            <div class="overlay-cat-card" onclick="scrollToSection('sides'); toggleMenu(false);">
-                <img src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400" alt="Sides">
+            <div class="overlay-cat-card" data-section="sides">
+                <img src="https://images.unsplash.com/photo-1626074353765-517a681e40be?w=400" alt="Sides">
                 <div class="overlay-cat-text">Sides</div>
             </div>
-            <div class="overlay-cat-card" onclick="scrollToSection('beverages'); toggleMenu(false);">
-                <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&h=450&fit=crop"
-                    alt="Drinks">
+            <div class="overlay-cat-card" data-section="beverages">
+                <img src="https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=600&h=450&fit=crop" alt="Drinks">
                 <div class="overlay-cat-text">Drinks</div>
             </div>
         </div>
@@ -992,7 +1012,7 @@
     <!-- Detail Modal -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-sheet">
-            <div class="modal-close-btn" onclick="closeModal()">
+            <div class="modal-close-btn" id="modalCloseBtn">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5"
                     stroke-linecap="round">
                     <line x1="18" y1="6" x2="6" y2="18" />
@@ -1014,35 +1034,45 @@
                 </div>
             </div>
 
-            <button class="action-button" onclick="addItemToOrder()">Add to Order</button>
+            <button class="action-button" id="addOrderBtn">Add to Order</button>
         </div>
     </div>
 
     <!-- Order Summary Modal (Receipt Style) -->
     <div class="modal-overlay" id="orderSummaryModal">
         <div class="modal-sheet" style="background: #eee; padding: 2rem 1.5rem;">
-            <div class="modal-close-btn" onclick="closeOrderSummary()" style="top: 1rem; right: 1rem;">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <div class="modal-close-btn" id="summaryCloseBtn" style="top: 1rem; right: 1rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5"
+                    stroke-linecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
             </div>
-            
+
             <div class="receipt-container">
                 <div class="receipt-header">
-                    <div class="receipt-title">Order Slip</div>
-                    <div style="font-size: 0.7rem; margin-top: 0.5rem;">TABLE: DEMO | SERVER: AI</div>
-                    <div style="font-size: 0.7rem; margin-top: 0.2rem;">${new Date().toLocaleTimeString()}</div>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                        <div class="receipt-title">Order Slip</div>
+                        <button id="clearAllBtn"
+                            style="background: none; border: none; font-family: 'Space Mono', monospace; font-size: 0.6rem; text-decoration: underline; cursor: pointer; color: var(--badge-red); font-weight: 700;">[CLEAR
+                            ALL]</button>
+                    </div>
+                    <div style="font-size: 0.7rem;">TABLE: DEMO | SERVER: AI</div>
+                    <div id="receiptTime" style="font-size: 0.7rem; margin-top: 0.2rem;"></div>
                 </div>
 
                 <div id="summaryContent" style="overflow-x: hidden;">
                     <!-- Dynamic Items -->
                 </div>
-                
+
                 <div class="swipe-hint">Swipe item to remove from slip</div>
 
                 <div class="total-section">
                     <div class="total-label">TOTAL</div>
                     <div id="summaryTotal" class="total-amount">0</div>
                 </div>
-                
+
                 <div style="text-align: center; margin-top: 2rem; font-size: 0.7rem; color: #555;">
                     ****************************<br>
                     PLEASE SHOW THIS TO YOUR SERVER<br>
@@ -1050,20 +1080,12 @@
                 </div>
             </div>
 
-            <button class="action-button" onclick="closeOrderSummary()" style="background: #333; margin-top: 3rem;">Close Slip</button>
+            <button class="action-button" id="closeSlipBtn" style="background: #333; margin-top: 3rem;">Close
+                Slip</button>
         </div>
     </div>
 
     <script>
-        // Native State
-        let currentItem = null;
-        let order = [];
-        window.addEventListener('scroll', () => {
-            const currentScroll = window.scrollY;
-            const header = document.getElementById('mainHeader');
-            header.classList.toggle('scrolled', currentScroll > 30);
-        });
-
         const menuData = {
             combos: [
                 { id: "01", title: "Signature Family Feast", includes: "2 Large Main Dishes, 2 Large Sides, 2 Premium Drinks", price: "299" },
@@ -1089,8 +1111,8 @@
                         { name: "The Platter (12 Pcs)", price: "199", sub: "Perfect for sharing. Choice of 2 artisanal house sauces", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&h=450&fit=crop", badge: "Chef's Choice" },
                         { name: "Half Platter (6 Pcs)", price: "109", sub: "Juicy flame-grilled selections with our signature house spice", img: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=600&h=450&fit=crop" },
                         { name: "Honey Garlic Tenders", price: "129", sub: "4 hand-breaded cuts tossed in locally sourced garlic nectar", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGRuuuVNkArH3S8wdh3qGuKuYzk2R4d6LOrg&s" },
-                        { name: "Zesty BBQ Wings", price: "119", sub: "Smokey, charred, and tossed in our world-famous glaze", img: "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600&h=450&fit=crop", badge: "Popular" },
-                        { name: "Peri-Peri Skewers", price: "145", sub: "Three prime cuts grilled over open flame with citrus spice", img: "https://assets.sainsburys-groceries.co.uk/gol/chicken-piri-piri-skewers/original.jpg" }
+                        { name: "Zesty BBQ Wings", price: "119", sub: "Smokey, charred, and tossed in our world-famous glaze", img: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=600&h=450&fit=crop", badge: "Popular" },
+                        { name: "Peri-Peri Skewers", price: "145", sub: "Three prime cuts grilled over open flame with citrus spice", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStkFlR4NcnNmPYKKw7Le58CpTqZ1YE5imrNw&s?w=600&h=450&fit=crop" }
                     ]
                 },
                 {
@@ -1126,426 +1148,403 @@
 
         const customizationOptions = {
             burgers: [
-                { title: "Gourmet Add-ons", items: ["Double Melt Cheese", "Hickory Bacon", "Guacamole Scoop", "Fried Egg"] },
-                { title: "Remove Ingredients", items: ["No Onions", "No Pickles", "No Lettuce", "No Sauce"] }
+                { title: "Gourmet Add-ons", items: [{ name: "Double Melt Cheese", price: 15 }, { name: "Hickory Bacon", price: 25 }, { name: "Guacamole Scoop", price: 20 }, { name: "Fried Egg", price: 10 }] },
+                { title: "Remove Ingredients", items: [{ name: "No Onions", price: 0 }, { name: "No Pickles", price: 0 }, { name: "No Lettuce", price: 0 }, { name: "No Sauce", price: 0 }] }
             ],
             wings: [
-                { title: "Flavor Profile", items: ["Extra Spicy", "More Glaze", "Dry Seasoning", "No Spice"] },
-                { title: "Wing Type", items: ["All Flats", "All Drums"] }
+                { title: "Flavor Profile", items: [{ name: "Extra Spicy", price: 5 }, { name: "More Glaze", price: 5 }, { name: "Dry Seasoning", price: 0 }, { name: "No Spice", price: 0 }] },
+                { title: "Wing Type", items: [{ name: "All Flats", price: 20 }, { name: "All Drums", price: 15 }] }
             ],
             sides: [
-                { title: "Side Upgrades", items: ["Add Truffle Oil", "Add Cheese Sauce", "Extra Crispy"] }
+                { title: "Side Upgrades", items: [{ name: "Add Truffle Oil", price: 30 }, { name: "Add Cheese Sauce", price: 15 }, { name: "Extra Crispy", price: 0 }] }
             ],
             drinks: [
-                { title: "Liquid Adjustments", items: ["Less Ice", "No Ice", "Extra Sweet"] }
+                { title: "Liquid Adjustments", items: [{ name: "Less Ice", price: 0 }, { name: "No Ice", price: 0 }, { name: "Extra Sweet", price: 5 }] }
             ],
             desserts: [
-                { title: "Sweet Add-ons", items: ["Extra Whipped Cream", "Chocolate Drizzle", "Caramel Sauce"] }
+                { title: "Sweet Add-ons", items: [{ name: "Extra Whipped Cream", price: 10 }, { name: "Chocolate Drizzle", price: 10 }, { name: "Caramel Sauce", price: 10 }] }
             ]
         };
 
-        function renderCombos() {
-            const carousel = document.getElementById('comboCarousel');
-            menuData.combos.forEach(combo => {
-                const card = document.createElement('div');
-                card.className = 'combo-card';
-                card.setAttribute('role', 'button');
-                card.setAttribute('aria-label', `View details for ${combo.title}`);
+        class MenuApp {
+            constructor() {
+                this.currentItem = null;
+                this.order = [];
+                this.isAutoScrolling = false;
+                this.scrollTimeout = null;
+                this.touchStartX = 0;
+                this.touchCurrentX = 0;
+                this.searchTimeout = null;
+                this.scrollThrottle = false;
 
-                const comboTitle = combo.title.toLowerCase();
-                const comboIncludes = combo.includes.toLowerCase();
-                let categories = [];
-                if (comboTitle.includes('wings') || comboIncludes.includes('wings') || comboTitle.includes('tenders') || comboIncludes.includes('tenders')) {
-                    categories.push('wings');
-                }
-                if (comboTitle.includes('burger') || comboIncludes.includes('burger')) {
-                    categories.push('burgers');
-                }
-                if (categories.length === 0) categories.push('wings');
+                this.init();
+            }
 
-                card.innerHTML = `
-                    <div class="combo-info">
-                        <div class="combo-number">#${combo.id}</div>
-                        <div class="combo-title brand-font">${combo.title}</div>
-                        <div class="combo-includes">${combo.includes}</div>
-                    </div>
-                    <div class="combo-price-tag">${combo.price}</div>
-                `;
-                card.onclick = (e) => {
-                    e.preventDefault();
-                    openItem({ name: `Combo #${combo.id}`, price: combo.price, sub: combo.title }, categories);
-                };
-                carousel.appendChild(card);
-            });
-            setupCarouselObserver();
-        }
+            init() {
+                this.renderCombos();
+                this.renderMenu();
+                this.attachGlobalListeners();
+                this.setupScrollSync();
+                this.setupRevealObserver();
+            }
 
-        function renderMenu() {
-            const container = document.getElementById('menuContainer');
-            menuData.categories.forEach(cat => {
-                const group = document.createElement('div');
-                group.className = 'menu-group';
-                group.id = cat.id;
-                group.innerHTML = `<h3 class="group-title brand-font">${cat.name}</h3>`;
+            attachGlobalListeners() {
+                window.addEventListener('scroll', () => {
+                    if (this.scrollThrottle) return;
+                    this.scrollThrottle = true;
+                    requestAnimationFrame(() => {
+                        const header = document.getElementById('mainHeader');
+                        header.classList.toggle('scrolled', window.scrollY > 30);
+                        this.scrollThrottle = false;
+                    });
+                });
 
-                const grid = document.createElement('div');
-                grid.className = 'card-grid';
-
-                // Determine size based on category importance
-                let sizeClass = 'size-md';
-                if (cat.id === 'burgers') sizeClass = 'size-lg';
-                if (cat.id === 'sides' || cat.id === 'beverages') sizeClass = 'size-sm';
-
-                cat.items.forEach((item, index) => {
-                    const wrap = document.createElement('div');
-                    wrap.className = index === 0 ? 'signature-item' : '';
-                    if (index === 0) {
-                        wrap.innerHTML = `<div class="signature-badge">Elite Select</div>`;
+                document.getElementById('headerTools').addEventListener('click', (e) => {
+                    const pill = e.target.closest('.nav-pill');
+                    if (pill) {
+                        const sectionId = pill.getAttribute('data-section');
+                        this.scrollToSection(sectionId);
                     }
+                });
 
-                    // Badge Logic (Principle 6 & 14)
-                    let badgeHTML = '';
-                    if (item.badge) {
-                        let badgeClass = 'badge-premium';
-                        if (item.badge === 'Popular') badgeClass = 'badge-premium';
-                        if (item.badge === 'Spicy') badgeClass = 'badge-urgent';
-                        if (item.badge === 'Healthy' || item.badge === 'Value') badgeClass = 'badge-health';
-                        badgeHTML = `<div class="item-badge ${badgeClass}">${item.badge}</div>`;
-                    }
+                document.querySelector('.header-left').addEventListener('click', () => this.toggleMenu(true));
+                document.querySelector('.header-right').addEventListener('click', () => this.toggleSearch());
+                document.getElementById('overlayClose').addEventListener('click', () => this.toggleMenu(false));
+                document.getElementById('modalCloseBtn').addEventListener('click', () => this.closeModal('modalOverlay'));
+                document.getElementById('summaryCloseBtn').addEventListener('click', () => this.closeModal('orderSummaryModal'));
+                document.getElementById('closeSlipBtn').addEventListener('click', () => this.closeModal('orderSummaryModal'));
+                document.getElementById('addOrderBtn').addEventListener('click', () => this.addItemToOrder());
+                document.getElementById('clearAllBtn').addEventListener('click', () => this.clearOrder());
+                document.getElementById('orderBar').addEventListener('click', () => this.openOrderSummary());
 
+                document.querySelectorAll('.overlay-cat-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const sectionId = card.getAttribute('data-section');
+                        this.scrollToSection(sectionId);
+                        this.toggleMenu(false);
+                    });
+                });
+
+                document.getElementById('menuSearch').addEventListener('input', () => this.handleSearch());
+            }
+
+            renderCombos() {
+                const carousel = document.getElementById('comboCarousel');
+                menuData.combos.forEach(combo => {
                     const card = document.createElement('div');
-                    card.className = `menu-card ${sizeClass}`;
-                    card.setAttribute('role', 'button');
-                    card.setAttribute('aria-label', `View details for ${item.name}`);
+                    card.className = 'combo-card';
                     card.innerHTML = `
-                        <div class="card-image-wrapper">
-                            <img src="${item.img}" alt="${item.name}" class="card-image" loading="lazy">
+                        <div class="combo-info">
+                            <div class="combo-number">#${combo.id}</div>
+                            <div class="combo-title brand-font">${combo.title}</div>
+                            <div class="combo-includes">${combo.includes}</div>
                         </div>
-                        <div class="card-content">
-                            <div class="card-header">
-                                ${badgeHTML}
-                                <div class="card-name">${item.name}</div>
-                                <div class="card-price">Chef's Signature Selection</div>
+                        <div class="combo-price-tag">${combo.price}</div>
+                    `;
+                    card.addEventListener('click', () => {
+                        this.openItem({
+                            name: `Combo #${combo.id}`,
+                            price: combo.price,
+                            sub: combo.title,
+                            img: "https://images.unsplash.com/photo-1606755962773-9efb900b991b?w=600&h=450&fit=crop"
+                        }, ['burgers', 'wings']);
+                    });
+                    carousel.appendChild(card);
+                });
+                this.setupCarouselObserver();
+            }
+
+            renderMenu() {
+                const container = document.getElementById('menuContainer');
+                menuData.categories.forEach(cat => {
+                    const group = document.createElement('div');
+                    group.className = 'menu-group';
+                    group.id = cat.id;
+                    group.innerHTML = `<h3 class="group-title brand-font">${cat.name}</h3>`;
+
+                    const grid = document.createElement('div');
+                    grid.className = 'card-grid';
+
+                    let sizeClass = (cat.id === 'burgers') ? 'size-lg' :
+                        (cat.id === 'sides' || cat.id === 'beverages') ? 'size-sm' : 'size-md';
+
+                    cat.items.forEach((item, index) => {
+                        const wrap = document.createElement('div');
+                        wrap.className = 'reveal-card';
+                        if (index === 0) {
+                            wrap.classList.add('signature-item');
+                            wrap.innerHTML = `<div class="signature-badge">Elite Select</div>`;
+                        }
+
+                        const card = document.createElement('div');
+                        card.className = `menu-card ${sizeClass}`;
+
+                        let badgeHTML = item.badge ? `<div class="item-badge badge-${item.badge.toLowerCase() === 'popular' ? 'premium' : item.badge.toLowerCase() === 'spicy' ? 'urgent' : 'health'}">${item.badge}</div>` : '';
+
+                        card.innerHTML = `
+                            <div class="card-image-wrapper">
+                                <img src="${item.img}" alt="${item.name}" class="card-image" loading="lazy">
                             </div>
-                            <div class="card-bottom">
-                                <div class="card-price-main">${item.price}</div>
+                            <div class="card-content">
+                                <div class="card-header">
+                                    ${badgeHTML}
+                                    <div class="card-name">${item.name}</div>
+                                    <div class="card-price">Chef's Signature Selection</div>
+                                </div>
+                                <div class="card-bottom">
+                                    <div class="card-price-main">${item.price}</div>
+                                </div>
                             </div>
+                        `;
+                        card.addEventListener('click', () => this.openItem(item, cat.id));
+                        wrap.appendChild(card);
+                        grid.appendChild(wrap);
+                    });
+                    group.appendChild(grid);
+                    container.appendChild(group);
+                });
+            }
+
+            setupCarouselObserver() {
+                const carousel = document.getElementById('comboCarousel');
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => entry.target.classList.toggle('active', entry.isIntersecting));
+                }, { root: carousel, threshold: 0.6 });
+
+                document.querySelectorAll('.combo-card').forEach(card => observer.observe(card));
+            }
+
+            setupScrollSync() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) this.updateActiveNav(entry.target.id);
+                    });
+                }, { rootMargin: '-100px 0px -70% 0px' });
+
+                document.querySelectorAll('.menu-group, .combo-section').forEach(section => observer.observe(section));
+            }
+
+            updateActiveNav(id) {
+                if (this.isAutoScrolling) return;
+                document.querySelectorAll('.nav-pill').forEach(el => {
+                    const isActive = el.getAttribute('data-section') === id;
+                    el.classList.toggle('active', isActive);
+                    if (isActive) el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                });
+            }
+
+            scrollToSection(id) {
+                const element = document.getElementById(id);
+                if (!element) return;
+
+                this.isAutoScrolling = true;
+                this.updateActiveNav(id);
+
+                const offset = 180;
+                const bodyRect = document.body.getBoundingClientRect().top;
+                const elementPosition = element.getBoundingClientRect().top - bodyRect;
+
+                window.scrollTo({ top: elementPosition - offset, behavior: 'smooth' });
+
+                clearTimeout(this.scrollTimeout);
+                this.scrollTimeout = setTimeout(() => this.isAutoScrolling = false, 800);
+                
+                this.setupRevealObserver();
+            }
+
+            setupRevealObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('revealed');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+                document.querySelectorAll('.reveal-card').forEach(card => observer.observe(card));
+            }
+
+            handleSearch() {
+                clearTimeout(this.searchTimeout);
+                this.searchTimeout = setTimeout(() => {
+                    const query = document.getElementById('menuSearch').value.toLowerCase();
+                    document.querySelectorAll('.menu-card').forEach(card => {
+                        const name = card.querySelector('.card-name').innerText.toLowerCase();
+                        const wrap = card.closest('.reveal-card');
+                        wrap.style.display = name.includes(query) ? 'block' : 'none';
+                    });
+
+                    document.querySelectorAll('.menu-group').forEach(section => {
+                        const visibleWraps = Array.from(section.querySelectorAll('.reveal-card'))
+                            .filter(wrap => wrap.style.display !== 'none');
+                        section.style.display = (visibleWraps.length > 0 || query === "") ? 'block' : 'none';
+                    });
+
+                    document.getElementById('combos').style.display = query === "" ? 'block' : 'none';
+                }, 300);
+            }
+
+            toggleSearch() {
+                const container = document.getElementById('searchContainer');
+                container.classList.toggle('active');
+                if (container.classList.contains('active')) document.getElementById('menuSearch').focus();
+            }
+
+            toggleMenu(show) {
+                document.getElementById('menuOverlay').classList.toggle('active', show);
+                document.body.style.overflow = show ? 'hidden' : '';
+            }
+
+            openItem(item, categories) {
+                this.currentItem = item;
+                if (!Array.isArray(categories)) categories = [categories];
+
+                const modal = document.getElementById('modalOverlay');
+                document.getElementById('modalImg').src = item.img;
+                document.getElementById('modalTitle').innerText = item.name;
+                document.getElementById('modalSub').innerText = item.sub;
+                document.getElementById('modalPrice').innerText = `${item.price}`;
+
+                const customContent = document.getElementById('customContent');
+                customContent.innerHTML = '';
+
+                const majorCat = categories.find(c => customizationOptions[c]);
+                const options = customizationOptions[majorCat] || [];
+
+                options.forEach(group => {
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'custom-group';
+                    groupDiv.innerHTML = `
+                        <span class="custom-label">${group.title}</span>
+                        <div class="custom-grid">
+                            ${group.items.map(opt => `<div class="custom-option" data-price="${opt.price}">${opt.name}<small>+${opt.price.toFixed(2)}</small></div>`).join('')}
                         </div>
                     `;
-                    card.onclick = () => openItem(item, cat.id);
-                    wrap.appendChild(card);
-                    grid.appendChild(wrap);
+                    groupDiv.querySelectorAll('.custom-option').forEach(opt => {
+                        opt.addEventListener('click', () => opt.classList.toggle('selected'));
+                    });
+                    customContent.appendChild(groupDiv);
                 });
-                group.appendChild(grid);
-                container.appendChild(group);
-            });
-            setupScrollSync();
-        }
 
-        function setupCarouselObserver() {
-            const carousel = document.getElementById('comboCarousel');
-            if (!carousel) return;
-
-            const observerOptions = {
-                root: carousel,
-                threshold: 0.6
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                    } else {
-                        entry.target.classList.remove('active');
-                    }
-                });
-            }, observerOptions);
-
-            document.querySelectorAll('.combo-card').forEach(card => observer.observe(card));
-        }
-
-        function setupScrollSync() {
-            const observerOptions = {
-                root: null,
-                rootMargin: '-100px 0px -70% 0px',
-                threshold: 0
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        updateActiveNav(entry.target.id);
-                    }
-                });
-            }, observerOptions);
-
-            document.querySelectorAll('.menu-group, .combo-section').forEach(section => {
-                observer.observe(section);
-            });
-        }
-
-        let isAutoScrolling = false;
-        let scrollTimeout;
-
-        function updateActiveNav(id) {
-            if (isAutoScrolling) return; // Prevent intermediate triggers during jumps
-
-            const navItems = document.querySelectorAll('.nav-pill');
-            navItems.forEach(el => {
-                const isActive = el.getAttribute('onclick').includes(id);
-                el.classList.toggle('active', isActive);
-                if (isActive) {
-                    el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                }
-            });
-        }
-
-        function handleSearch() {
-            const query = document.getElementById('menuSearch').value.toLowerCase();
-            const items = document.querySelectorAll('.menu-card');
-            const sections = document.querySelectorAll('.menu-group');
-
-            items.forEach(card => {
-                const name = card.querySelector('.card-name').innerText.toLowerCase();
-                const isMatch = name.includes(query);
-                card.style.display = isMatch ? 'flex' : 'none';
-            });
-
-            // Hide sections if no items match
-            sections.forEach(section => {
-                const visibleItems = section.querySelectorAll('.menu-card[style="display: flex;"]');
-                section.style.display = visibleItems.length > 0 || query === "" ? 'block' : 'none';
-            });
-
-            // Hide combos if searching
-            const comboSection = document.getElementById('combos');
-            if (comboSection) {
-                comboSection.style.display = query === "" ? 'block' : 'none';
+                this.showModal(modal);
             }
-        }
 
-        function toggleSearch() {
-            const container = document.getElementById('searchContainer');
-            container.classList.toggle('active');
-            if (container.classList.contains('active')) {
-                document.getElementById('menuSearch').focus();
-            }
-        }
-
-        function toggleMenu(show) {
-            const overlay = document.getElementById('menuOverlay');
-            overlay.classList.toggle('active', show);
-            document.body.style.overflow = show ? 'hidden' : '';
-        }
-
-        function scrollToSection(id) {
-            const element = document.getElementById(id);
-            if (!element) return;
-
-            // 1. Lock scroll observer
-            isAutoScrolling = true;
-
-            // 2. Instant Visual Highlight
-            const navItems = document.querySelectorAll('.nav-pill');
-            navItems.forEach(el => {
-                const isActive = el.getAttribute('onclick').includes(id);
-                el.classList.toggle('active', isActive);
-                if (isActive) el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            });
-
-            // 3. Perform Jump
-            const offset = 180; // Combined height of sticky header + tools
-            const bodyRect = document.body.getBoundingClientRect().top;
-            const elementRect = element.getBoundingClientRect().top;
-            const elementPosition = elementRect - bodyRect;
-            const offsetPosition = elementPosition - offset;
-
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
-
-            // 4. Unlock after animation completes
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {
-                isAutoScrolling = false;
-            }, 800); // Wait for smooth scroll duration
-        }
-
-        function openItem(item, categories) {
-            currentItem = item;
-            if (!Array.isArray(categories)) categories = [categories];
-
-            const modal = document.getElementById('modalOverlay');
-            document.getElementById('modalImg').src = item.img;
-            document.getElementById('modalTitle').innerText = item.name;
-            document.getElementById('modalSub').innerText = item.sub;
-            document.getElementById('modalPrice').innerText = `${item.price}`;
-
-            const customContent = document.getElementById('customContent');
-            customContent.innerHTML = '';
-
-            // Find match for category
-            const majorCat = categories.find(c => customizationOptions[c]);
-            const options = customizationOptions[majorCat] || [];
-
-            options.forEach(group => {
-                const groupDiv = document.createElement('div');
-                groupDiv.className = 'custom-group';
-                groupDiv.innerHTML = `
-                    <span class="custom-label">${group.title}</span>
-                    <div class="custom-grid">
-                        ${group.items.map(opt => `
-                            <div class="custom-option" onclick="toggleOption(this)">
-                                ${opt}
-                                <small>+0.00</small>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                customContent.appendChild(groupDiv);
-            });
-
-            modal.style.display = 'flex';
-            requestAnimationFrame(() => {
+            showModal(modal) {
+                modal.style.display = 'flex';
                 requestAnimationFrame(() => {
-                    modal.classList.add('active');
+                    requestAnimationFrame(() => modal.classList.add('active'));
                 });
-            });
-            document.body.style.overflow = 'hidden';
-        }
-
-        function toggleOption(el) {
-            el.classList.toggle('selected');
-        }
-
-        function addItemToOrder() {
-            const selectedOptions = Array.from(document.querySelectorAll('.custom-option.selected'))
-                .map(el => el.innerText.split('\n')[0].trim());
-            
-            order.push({
-                ...currentItem,
-                customizations: selectedOptions
-            });
-
-            updateOrderUI();
-            
-            // Pop effect
-            const bar = document.getElementById('orderBar');
-            bar.classList.add('pop-anim');
-            setTimeout(() => bar.classList.remove('pop-anim'), 300);
-
-            closeModal();
-        }
-
-        function updateOrderUI() {
-            const bar = document.getElementById('orderBar');
-            const count = document.getElementById('orderCount');
-            const price = document.getElementById('orderTotalPrice');
-
-            if (order.length > 0) {
-                bar.classList.add('active');
-                count.innerText = order.length;
-                const total = order.reduce((sum, item) => sum + parseFloat(item.price), 0);
-                price.innerText = total;
-            } else {
-                bar.classList.remove('active');
+                document.body.style.overflow = 'hidden';
             }
-        }
 
-        function openOrderSummary() {
-            const modal = document.getElementById('orderSummaryModal');
-            const content = document.getElementById('summaryContent');
-            const totalDisplay = document.getElementById('summaryTotal');
-
-            content.innerHTML = order.map((item, idx) => `
-                <div class="summary-item" data-index="${idx}" 
-                     ontouchstart="handleTouchStart(event)" 
-                     ontouchmove="handleTouchMove(event)" 
-                     ontouchend="handleTouchEnd(event)">
-                    <div class="summary-details">
-                        <h4>${item.name}</h4>
-                        <p style="font-size: 0.7rem; color: #777;">${item.customizations.length > 0 ? item.customizations.join(', ') : 'Standard'}</p>
-                    </div>
-                    <div class="summary-price">${item.price}</div>
-                </div>
-            `).join('');
-
-            const total = order.reduce((sum, item) => sum + parseFloat(item.price), 0);
-            totalDisplay.innerText = total;
-
-            modal.style.display = 'flex';
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    modal.classList.add('active');
-                });
-            });
-            document.body.style.overflow = 'hidden';
-        }
-
-        let touchStartX = 0;
-        let touchCurrentX = 0;
-
-        function handleTouchStart(e) {
-            touchStartX = e.touches[0].clientX;
-            e.currentTarget.classList.add('swiping');
-        }
-
-        function handleTouchMove(e) {
-            touchCurrentX = e.touches[0].clientX;
-            const diff = touchCurrentX - touchStartX;
-            // Only allow right swipe for removal logic, or left if preferred
-            if (Math.abs(diff) > 10) {
-                e.currentTarget.style.transform = `translateX(${diff}px)`;
-            }
-        }
-
-        function handleTouchEnd(e) {
-            const el = e.currentTarget;
-            el.classList.remove('swiping');
-            const diff = touchCurrentX - touchStartX;
-            const index = parseInt(el.getAttribute('data-index'));
-
-            if (Math.abs(diff) > 120) {
-                // Remove item
-                el.classList.add('removed');
+            closeModal(modalId) {
+                const modal = document.getElementById(modalId);
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
                 setTimeout(() => {
-                    order.splice(index, 1);
-                    updateOrderUI();
-                    openOrderSummary(); // Refresh list
-                }, 300);
-            } else {
-                // Snap back
-                el.style.transform = 'translateX(0)';
+                    if (!modal.classList.contains('active')) modal.style.display = 'none';
+                }, 500);
             }
-            touchStartX = 0;
-            touchCurrentX = 0;
-        }
 
-        function closeOrderSummary() {
-            const modal = document.getElementById('orderSummaryModal');
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-            setTimeout(() => {
-                if (!modal.classList.contains('active')) {
-                    modal.style.display = 'none';
+            addItemToOrder() {
+                const selections = Array.from(document.querySelectorAll('.custom-option.selected'))
+                    .map(el => ({
+                        name: el.childNodes[0].textContent.trim(),
+                        price: parseFloat(el.getAttribute('data-price'))
+                    }));
+
+                const basePrice = parseFloat(this.currentItem.price);
+                const extraPrice = selections.reduce((s, opt) => s + opt.price, 0);
+                const finalPrice = basePrice + extraPrice;
+
+                this.order.push({
+                    ...this.currentItem,
+                    finalPrice: finalPrice.toFixed(2),
+                    customizations: selections.map(s => s.name)
+                });
+                this.updateOrderUI();
+
+                const bar = document.getElementById('orderBar');
+                bar.classList.add('pop-anim');
+                setTimeout(() => bar.classList.remove('pop-anim'), 300);
+
+                this.closeModal('modalOverlay');
+            }
+
+            updateOrderUI() {
+                const bar = document.getElementById('orderBar');
+                if (this.order.length > 0) {
+                    bar.classList.add('active');
+                    document.getElementById('orderCount').innerText = this.order.length;
+                    document.getElementById('orderTotalPrice').innerText = this.order.reduce((s, i) => s + parseFloat(i.finalPrice), 0).toFixed(2);
+                } else {
+                    bar.classList.remove('active');
                 }
-            }, 500);
-        }
+            }
 
-        function closeModal() {
-            const modal = document.getElementById('modalOverlay');
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-            setTimeout(() => {
-                if (!modal.classList.contains('active')) {
-                    modal.style.display = 'none';
+            openOrderSummary() {
+                const modal = document.getElementById('orderSummaryModal');
+                const content = document.getElementById('summaryContent');
+                
+                document.getElementById('receiptTime').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                content.innerHTML = this.order.map((item, idx) => `
+                    <div class="summary-item" data-index="${idx}">
+                        <div class="summary-details">
+                            <h4>${item.name}</h4>
+                            <p style="font-size: 0.7rem; color: #777;">${item.customizations.length > 0 ? item.customizations.join(', ') : 'Standard'}</p>
+                        </div>
+                        <div class="summary-price">${item.finalPrice}</div>
+                    </div>
+                `).join('');
+
+                content.querySelectorAll('.summary-item').forEach(el => {
+                    el.addEventListener('touchstart', (e) => this.handleTouchStart(e));
+                    el.addEventListener('touchmove', (e) => this.handleTouchMove(e));
+                    el.addEventListener('touchend', (e) => this.handleTouchEnd(e));
+                });
+
+                document.getElementById('summaryTotal').innerText = this.order.reduce((s, i) => s + parseFloat(i.finalPrice), 0).toFixed(2);
+                this.showModal(modal);
+            }
+
+            handleTouchStart(e) {
+                this.touchStartX = e.touches[0].clientX;
+                e.currentTarget.classList.add('swiping');
+            }
+
+            handleTouchMove(e) {
+                this.touchCurrentX = e.touches[0].clientX;
+                const diff = this.touchCurrentX - this.touchStartX;
+                if (Math.abs(diff) > 10) e.currentTarget.style.transform = `translateX(${diff}px)`;
+            }
+
+            handleTouchEnd(e) {
+                const el = e.currentTarget;
+                el.classList.remove('swiping');
+                const diff = this.touchCurrentX - this.touchStartX;
+                if (Math.abs(diff) > 120) {
+                    el.classList.add('removed');
+                    setTimeout(() => {
+                        this.order.splice(parseInt(el.getAttribute('data-index')), 1);
+                        this.updateOrderUI();
+                        this.openOrderSummary();
+                    }, 300);
+                } else {
+                    el.style.transform = 'translateX(0)';
                 }
-            }, 500);
+            }
+
+            clearOrder() {
+                this.order = [];
+                this.updateOrderUI();
+                this.closeModal('orderSummaryModal');
+            }
         }
 
-        renderCombos();
-        renderMenu();
+        const app = new MenuApp();
+        function clearOrder() { app.clearOrder(); }
     </script>
 </body>
 
